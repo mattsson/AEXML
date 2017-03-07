@@ -305,6 +305,7 @@ open class AEXMLElement {
                 xml += "</\(name)>"
             } else {
                 // insert string value and close element
+                let string = optionalString ?? String()
                 xml += ">\(string.xmlEscaped)</\(name)>"
             }
         }
