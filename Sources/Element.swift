@@ -52,14 +52,16 @@ open class AEXMLElement {
     /// Error value (`nil` if there is no error).
     open var error: AEXMLError?
     
-    /// String representation of `value` property (if `value` is `nil` this is empty String).
-    open var string: String { return value ?? String() }
-    
     /// Optional string representation of `value` property
     open var optionalString: String? { return self.value }
     
-    /// Boolean representation of `value` property (if `value` is "true" or 1 this is `True`, otherwise `False`).
-    open var bool: Bool { return string.lowercased() == "true" || Int(string) == 1 ? true : false }
+    open func string() throws -> String {
+        guard let unwrappedString = self.optionalString else {
+            throw AEXMLError.elementNotFound
+        }
+        
+        return unwrappedString
+    }
     
     /// Optional boolean representation of `value` property.
     open var optionalBool: Bool? {
@@ -73,8 +75,14 @@ open class AEXMLElement {
         return nil
     }
     
-    /// Integer representation of `value` property (this is **0** if `value` can't be represented as Integer).
-    open var int: Int { return Int(string) ?? 0 }
+    /// Boolean representation of `value` property expected to never be nil
+    open func bool() throws -> Bool {
+        guard let unwrappedBool = self.optionalBool else {
+            throw AEXMLError.elementNotFound
+        }
+        
+        return unwrappedBool
+    }
     
     /// Optional integer representation of `value` property.
     open var optionalInt: Int? {
@@ -84,8 +92,14 @@ open class AEXMLElement {
         return nil
     }
     
-    /// Double representation of `value` property (this is **0.00** if `value` can't be represented as Double).
-    open var double: Double { return Double(string) ?? 0.00 }
+    /// Integer representation of `value` property expected to never be nil
+    open func int() throws -> Int {
+        guard let unwrappedInt = self.optionalInt else {
+            throw AEXMLError.elementNotFound
+        }
+        
+        return unwrappedInt
+    }
     
     /// Optional double representation of `value` property.
     open var optionalDouble: Double? {
@@ -93,6 +107,15 @@ open class AEXMLElement {
             return Double(value)
         }
         return nil
+    }
+    
+    /// Double representation of `value` property expected to never be nil
+    open func double() throws -> Double {
+        guard let unwrappedDouble = self.optionalDouble else {
+            throw AEXMLError.elementNotFound
+        }
+        
+        return unwrappedDouble
     }
     
     // MARK: - Lifecycle
